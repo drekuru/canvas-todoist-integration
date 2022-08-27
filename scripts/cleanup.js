@@ -1,5 +1,5 @@
 require('dotenv').config();
-const TodoistAPI = require('./api/todoist');
+const TodoistAPI = require('../api/todoist');
 
 main();
 
