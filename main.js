@@ -20,6 +20,7 @@ async function createProjectTask(projectId, task)
     console.log(refinedTask);
 
     // eslint-disable-next-line no-unused-vars
+    console.log('Sleeping for 5 seconds');
     const wait = await delay(5000);
 
     return TodoistAPI.createTask(refinedTask);
