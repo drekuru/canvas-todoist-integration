@@ -17,10 +17,9 @@ async function createProjectTask(projectId, task)
         due_datetime: task.due_at || null
     };
 
-    console.log(refinedTask);
+    console.log('Sleeping for 5 seconds');
 
     // eslint-disable-next-line no-unused-vars
-    console.log('Sleeping for 5 seconds');
     const wait = await delay(5000);
 
     return TodoistAPI.createTask(refinedTask);
@@ -49,10 +48,10 @@ async function main()
 
             await Promise.all(assignments.map(assignment =>
             {
-                if (DateTime.fromISO(assignment.due_at).toMillis() > DateTime.local().toMillis())
+                if ((assignment.due_at && DateTime.fromISO(assignment.due_at).toMillis() > DateTime.local().toMillis()) || !assignment.due_at)
                     return createProjectTask(project, assignment);
                 else
-                    return console.log(`${assignment.name} is not due`);
+                    return console.log(`${assignment.name} is past due`);
             }));
         }
     }
