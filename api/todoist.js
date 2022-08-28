@@ -36,6 +36,11 @@ class TodoistAPI
         return api.get('/rest/v1/projects');
     }
 
+    static getTasks()
+    {
+        return api.get('/rest/v1/tasks');
+    }
+
     static deleteProject(projectId)
     {
         if (!projectId)

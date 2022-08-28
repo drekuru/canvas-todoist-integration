@@ -1,58 +1,39 @@
 // this has to stay at the top of the file
 require('dotenv').config();
 
-const TodoistAPI = require('./api/todoist');
-const CanvasAPI = require('./api/canvas');
+const TodoistService = require('./services/TodoistService');
+const CanvasService = require('./services/CanvasService');
 const { DateTime } = require('luxon');
-const delay = require('delay');
 
-main();
+syncAssignments();
 
-async function createProjectTask(projectId, task) 
-{
-    const refinedTask =
-    {
-        project_id: projectId.id,
-        content: task.name,
-        due_datetime: task.due_at || null
-    };
-
-    console.log('Sleeping for 5 seconds');
-
-    // eslint-disable-next-line no-unused-vars
-    const wait = await delay(5000);
-
-    return TodoistAPI.createTask(refinedTask);
-}
-
-async function main() 
+async function syncAssignments() 
 {
     try
     {
         // get all my courses
-        const { data: courses } = await CanvasAPI.getCurrentCourses();
+        const courses = await CanvasService.getCurrentCourses();
 
         console.log(`Found ${courses.length} courses`);
 
         // create courses as projects in todoist
         for (const course of courses)
         {
-            const { data: project } = await TodoistAPI.createProject({ name: course.courseCode });
-
-            console.log(`Created project ${project.name}`);
+            const project = await TodoistService.upsertProject({ name: course.courseCode });
 
             // get all assignments for each course
-            const { data: assignments } = await CanvasAPI.getCourseAssignments(course.id);
+            const assignments = await CanvasService.getCourseAssignments(course.id);
 
             console.log(`Found ${assignments.length} assignments for ${course.courseCode}`);
 
-            await Promise.all(assignments.map(assignment =>
+            // not using promise.all here because we want to create tasks in order and not overload the api
+            for (const assignment of assignments)
             {
                 if ((assignment.due_at && DateTime.fromISO(assignment.due_at).toMillis() > DateTime.local().toMillis()) || !assignment.due_at)
-                    return createProjectTask(project, assignment);
+                    await TodoistService.upsertTask(assignment, project);
                 else
-                    return console.log(`${assignment.name} is past due`);
-            }));
+                    console.log(`${assignment.name} is past due`);
+            }
         }
     }
     catch (err)
