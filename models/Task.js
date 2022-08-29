@@ -13,8 +13,8 @@ class Task
         if (!data.name)
             throw new Error('data.name is required');
 
-        // clean up the name - remove * and make sure string is less than 75 characters
-        const name = data.name.replace(/\*/g, '').substring(0, 75);
+        // clean up the name - remove * and - and make sure string is less than 75 characters
+        const name = data.name.replace(/[*-]/g, '').substring(0, 75);
 
         return {
             content: name,

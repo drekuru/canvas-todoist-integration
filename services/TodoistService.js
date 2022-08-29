@@ -51,7 +51,7 @@ class TodoistService
 
         const existingTasks = await TodoistService.getTasks();
 
-        const existingTask = existingTasks.find(t => t.content === TodoistTask.content);
+        const existingTask = existingTasks.find(t => t.content.replace(/\s/g, '') === TodoistTask.content.replace(/\s/g, ''));
 
         if (existingTask)
         {
