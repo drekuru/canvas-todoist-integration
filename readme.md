@@ -38,7 +38,7 @@ Ask the user if they want one of the following for a project name:
 -  [ ] Long Name
 
 ## Installation 
-After cloning this repo, run `npm i` to get the required packages (`node-fetch` and `dotenv`)
+After cloning this repo, run `npm i` to get the required packages (`axios` and `dotenv`, etc)
 
 After the packages are installed, you will need to get your API tokens from Todoist and Canvas. 
 
@@ -62,6 +62,7 @@ Canvas Token Retrieval
 - The dialog will ask for some information about the use of your token and when you would like it to expire, fill it out how you see fit. 
 - **If you decide to add an expiration date to your token, which is recommended` don't forget to get a new token when needed!**
 - In your `.env` file, add `CANVAS_API_TOKEN=` on a new line with your token after the equal sign
+- In your `.env` file, add`CANVAS_COLLEGE_SUBDOMAIN=` and set it to the subdomain of your college
 
 ### Run The Application 
 Type `node main.js` to run the application and watch your life get easier. 
